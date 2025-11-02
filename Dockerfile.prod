@@ -1,0 +1,34 @@
+# Étape 1 : Builder l'app
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+# Copier les fichiers nécessaires pour builder
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
+
+# Copier tout le code
+COPY . .
+
+# Build du projet Medusa
+RUN npx medusa build
+
+# Étape 2 : Image finale (production)
+FROM node:20-alpine AS runner
+
+WORKDIR /app
+
+# Copier uniquement le dossier buildé et les deps nécessaires
+COPY --from=builder /app/.medusa/server /app
+COPY --from=builder /app/package.json /app/yarn.lock ./
+
+# Installer les dépendances runtime
+RUN yarn install --production --frozen-lockfile
+
+# Copier le .env
+COPY .env .env
+
+ENV NODE_ENV=production
+EXPOSE 9000
+
+CMD ["yarn", "start"]

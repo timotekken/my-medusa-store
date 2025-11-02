@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  # === Service principal : API Server ===
+  medusa_server:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    container_name: medusa_server
+    restart: always
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      WORKER_MODE: server
+      ADMIN_DISABLE: "false"
+    ports:
+      - "9000:9000"
+    networks:
+      - medusa-net
+    
+    command: ["yarn", "start"]
+
+  # === Service worker (traitement en arrière-plan) ===
+  medusa_worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    container_name: medusa_worker
+    restart: always
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      WORKER_MODE: worker
+      ADMIN_DISABLE: "true"
+    networks:
+      - timtkn
+    
+    command: ["yarn", "start"]
+
+networks:
+  timtkn:
+    external: true
+
