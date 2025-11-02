@@ -8,7 +8,7 @@ services:
       dockerfile: Dockerfile.prod
     container_name: medusa_server
     restart: always
-    env_file: .env
+    env_file: .env.production
     environment:
       NODE_ENV: production
       WORKER_MODE: server
@@ -27,7 +27,7 @@ services:
       dockerfile: Dockerfile.prod
     container_name: medusa_worker
     restart: always
-    env_file: .env
+    env_file: .env.production
     environment:
       NODE_ENV: production
       WORKER_MODE: worker

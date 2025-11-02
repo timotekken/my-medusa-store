@@ -3,11 +3,11 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copier les fichiers nécessaires pour builder
+# Copier les fichiers nécessaires pour installer les dépendances
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile
 
-# Copier tout le code
+# Copier tout le code source
 COPY . .
 
 # Build du projet Medusa
@@ -18,17 +18,25 @@ FROM node:20-alpine AS runner
 
 WORKDIR /app
 
-# Copier uniquement le dossier buildé et les deps nécessaires
-COPY --from=builder /app/.medusa/server /app
+# Copier uniquement le dossier buildé et les fichiers nécessaires
+COPY --from=builder /app/.medusa/server /app/.medusa/server
 COPY --from=builder /app/package.json /app/yarn.lock ./
 
-# Installer les dépendances runtime
+
+# Aller dans le dossier buildé
+WORKDIR /app/.medusa/server
+
+# Installer les dépendances runtime du serveur buildé
 RUN yarn install --production --frozen-lockfile
 
-# Copier le .env
-COPY .env .env
+# Exécuter la commande predeploy (préparation du build)
+RUN yarn predeploy
 
+# Définir les variables d'environnement
 ENV NODE_ENV=production
+
+# Exposer le port Medusa
 EXPOSE 9000
 
+# Lancer le serveur
 CMD ["yarn", "start"]

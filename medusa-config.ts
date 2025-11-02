@@ -24,6 +24,12 @@ module.exports = defineConfig({
         },
         
         redisUrl: process.env.REDIS_URL,
+
+        cookieOptions: {
+          sameSite: "lax",
+          secure: false,
+        }, //to delete once testing is done
+
         
       },
 
