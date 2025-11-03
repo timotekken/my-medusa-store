@@ -25,10 +25,10 @@
     "predeploy": "medusa db:migrate"
   },
   "dependencies": {
-    "@medusajs/admin-sdk": "2.9.0",
-    "@medusajs/cli": "2.9.0",
-    "@medusajs/framework": "2.9.0",
-    "@medusajs/medusa": "2.9.0",
+    "@medusajs/admin-sdk": "2.11.2",
+    "@medusajs/cli": "2.11.2",
+    "@medusajs/framework": "2.11.2",
+    "@medusajs/medusa": "2.11.2",
     "@mikro-orm/core": "6.4.3",
     "@mikro-orm/knex": "6.4.3",
     "@mikro-orm/migrations": "6.4.3",
